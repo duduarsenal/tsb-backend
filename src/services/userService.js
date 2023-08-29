@@ -10,11 +10,46 @@ class UserService {
         }
     }
 
+    async getUser(id){
+        try {
+            const user = await User.findById({_id: id})
+            if (!user) throw new Error("User not found")
+            return user;
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
+
     async createUser(name, username, password){
         try{
-            User.create({name, username, password})
+            if(await User.findOne({username: username})) throw new Error("User already exists")
+
+            const createdUser = await User.create({name, username, password})
+            return createdUser;
         } catch (error) {
             throw new Error(error)
+        }
+    }
+
+    async updateUser(id, name, password){
+        try {
+            const user = await User.findById({_id: id})
+            if (!user) throw new Error("User not found")
+
+            return await User.findByIdAndUpdate({_id: id}, {name: name, password: password}, {new: true})
+        } catch (error) {
+            throw new Error(error)
+        }
+    }
+
+    async deleteUser(id){
+        try {
+            const user = await User.findById({_id: id})
+            if (!user) throw new Error("User not found")
+
+            return await User.findByIdAndDelete({_id: id})
+        } catch (error) {
+            throw new Error(error)            
         }
     }
 }
