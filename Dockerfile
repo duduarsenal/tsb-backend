@@ -13,8 +13,5 @@ RUN npm install
 # Copie o restante dos arquivos do projeto
 COPY . .
 
-# Porta que o aplicativo Express vai escutar
-EXPOSE 3030
-
 # Comando para iniciar o aplicativo
 CMD [ "node", "server.js" ]
