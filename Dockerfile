@@ -2,8 +2,7 @@
 FROM node:18
 
 # Diretório de trabalho dentro do contêiner
-WORKDIR ./src/server.js
-
+WORKDIR .
 
 # Instale as dependências
 RUN npm install
