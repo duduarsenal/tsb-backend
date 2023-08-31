@@ -17,6 +17,6 @@ app.use("/insurances", InsurancesRoutes);
 mongoose
     .connect(URI)
     .then(() => { 
-        app.listen(PORT, () => console.log("Servidor conectado e rodando na porta: "+PORT) )  
+        app.listen(3000, () => console.log("Servidor conectado e rodando na porta: 3000") )  
     })
     .catch((error) => console.log(error.message))
