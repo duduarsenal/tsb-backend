@@ -1,14 +1,14 @@
-# Use uma imagem base Node.js
+# Use the official Node.js image as the base image
 FROM node:18
 
-# Diretório de trabalho dentro do contêiner
-WORKDIR .
+# Set the working directory in the container
+WORKDIR /src
 
-# Instale as dependências
+# Copy the application files into the working directory
+COPY . /app
+
+# Install the application dependencies
 RUN npm install
-
-# Copie o restante dos arquivos do projeto
-COPY . .
 
 # Expose port 3000
 EXPOSE 3030
