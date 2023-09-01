@@ -20,15 +20,28 @@ class UserController{
             const user = await this.userService.getUser(id)
             res.status(200).json(user)
         } catch (error) {
-            res.status(404).json(error.message)
+            res.status(404).json(error)
+        }
+    }
+
+    async authUser(req, res){
+        const { username, password } = req.body;
+        // console.log(username, password);
+        if (!username || !password) return res.send({error: true, message: "Campos vazios", status: 404});
+        
+        try {
+            const user = await this.userService.authUser(username, password)
+            return res.send({error: false, message: "Usuario autenticado", status: 200, userID: user._id})
+        } catch (error) {
+            return res.send(error.message)
         }
     }
 
     async createUser(req, res){
-        const { name, username, password } = req.body;
+        const { name, username, email, password } = req.body;
 
         try {
-            const createdUser = await this.userService.createUser(name, username, password)
+            const createdUser = await this.userService.createUser(name, username, email, password)
             return res.status(201).json({message: "Criado com sucesso", createdUser: createdUser})
         } catch (error) {
             return res.status(400).json(error.message)

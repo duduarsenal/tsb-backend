@@ -20,11 +20,21 @@ class UserService {
         }
     }
 
-    async createUser(name, username, password){
-        try{
-            if(await User.findOne({username: username})) throw new Error("User already exists")
+    async authUser(user, password){
+        try {
+            const userID = await User.exists({$or: [{username: user, password: password}, {email: user, password: password}]})
+            if (!userID) throw new Error(JSON.stringify({error: true, message: "User not exists", status: 404}))
+            return userID
+        } catch (error) {
+            throw new Error(error.message)
+        }
+    }
 
-            const createdUser = await User.create({name, username, password})
+    async createUser(name, username, email, password){
+        try{
+            if(await User.findOne({username: username}) || await User.findOne({email: email})) throw new Error("User already exists")
+
+            const createdUser = await User.create({name, username, email, password})
             return createdUser;
         } catch (error) {
             throw new Error(error)
