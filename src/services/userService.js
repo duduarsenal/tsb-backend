@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 class UserService {
     async getAllUsers(){
         try {
-            return await User.find();
+            return await User.find().select('-password -__v');
         } catch (error){
             // console.log(error)
             throw new Error(error);
@@ -13,7 +13,7 @@ class UserService {
 
     async getUser(id){
         try {
-            const user = await User.findById({_id: id})
+            const user = await User.findById({_id: id}).select('-password -__v');
             if (!user) throw new Error("User not found")
             return user;
         } catch (error) {
@@ -38,11 +38,11 @@ class UserService {
 
     async createUser(name, username, email, password){
         try{
-            if(await User.findOne({username: username})){
+            if(await User.findOne({username: username}, '-password -__v')){
                 throw new Error(JSON.stringify({error: true, message: "Username already exists", status: 400}))
             } 
 
-            if(await User.findOne({email: email})){
+            if(await User.findOne({email: email}, '-password -__v')){
                 throw new Error(JSON.stringify({error: true, message: "E-mail already exists", status: 400}))
             }
 
@@ -60,7 +60,9 @@ class UserService {
             const user = await User.findById({_id: id})
             if (!user) throw new Error("User not found")
 
-            return await User.findByIdAndUpdate({_id: id}, {name: name, password: password}, {new: true})
+            const cryptoPass = bcrypt.hashSync(password, 6);
+
+            return await User.findByIdAndUpdate({_id: id}, {name: name, password: cryptoPass}, {new: true}).select('-password -__v')
         } catch (error) {
             throw new Error(error)
         }
@@ -68,10 +70,10 @@ class UserService {
 
     async deleteUser(id){
         try {
-            const user = await User.findById({_id: id})
+            const user = await User.findById({_id: id}, '-password -__v')
             if (!user) throw new Error("User not found")
 
-            return await User.findByIdAndDelete({_id: id})
+            return await User.findByIdAndDelete({_id: id}, '-password -__v')
         } catch (error) {
             throw new Error(error)            
         }

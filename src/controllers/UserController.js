@@ -1,4 +1,5 @@
 const UserService = require('../services/userService')
+const { jwt, SECRET } = require('../config/config')
 
 class UserController{
     constructor(){
@@ -31,7 +32,11 @@ class UserController{
         
         try {
             const user = await this.userService.authUser(username, password)
-            return res.send({error: false, message: "User authenticated", status: 200, userID: user._id})
+            const token = jwt.sign({ id: user._id }, SECRET)
+            if (!token){
+                throw new Error("Erro ao gerar um token válido")
+            }
+            return res.send({error: false, message: "User authenticated", status: 200, tokenJWT: token})
         } catch (error) {
             return res.send(error.message)
         }
