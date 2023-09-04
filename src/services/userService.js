@@ -1,4 +1,5 @@
 const User = require('../models/userModel');
+const bcrypt = require('bcrypt');
 
 class UserService {
     async getAllUsers(){
@@ -22,9 +23,14 @@ class UserService {
 
     async authUser(user, password){
         try {
-            const userID = await User.exists({$or: [{username: user, password: password}, {email: user, password: password}]})
-            if (!userID) throw new Error(JSON.stringify({error: true, message: "User not exists", status: 404}))
-            return userID
+            const userData = await User.findOne({$or: [{username: user}, {email: user}]})
+            if (!userData) throw new Error(JSON.stringify({error: true, message: "User not exists", status: 404}))
+            
+            const comparePass = bcrypt.compareSync(password, userData.password)
+
+            if(!comparePass) throw new Error(JSON.stringify({error: true, message: "Invalid Password", status: 400}))
+            
+            return userData._id
         } catch (error) {
             throw new Error(error.message)
         }
@@ -32,12 +38,20 @@ class UserService {
 
     async createUser(name, username, email, password){
         try{
-            if(await User.findOne({username: username}) || await User.findOne({email: email})) throw new Error("User already exists")
+            if(await User.findOne({username: username})){
+                throw new Error(JSON.stringify({error: true, message: "Username already exists", status: 400}))
+            } 
 
-            const createdUser = await User.create({name, username, email, password})
+            if(await User.findOne({email: email})){
+                throw new Error(JSON.stringify({error: true, message: "E-mail already exists", status: 400}))
+            }
+
+            const cryptoPass = bcrypt.hashSync(password, 6);
+            const createdUser = await User.create({name, username, email, password: cryptoPass})
+
             return createdUser;
         } catch (error) {
-            throw new Error(error)
+            throw new Error(error.message)
         }
     }
 

@@ -27,11 +27,11 @@ class UserController{
     async authUser(req, res){
         const { username, password } = req.body;
         // console.log(username, password);
-        if (!username || !password) return res.send({error: true, message: "Campos vazios", status: 404});
+        if (!username || !password) return res.send({error: true, message: "Empty fields", status: 404});
         
         try {
             const user = await this.userService.authUser(username, password)
-            return res.send({error: false, message: "Usuario autenticado", status: 200, userID: user._id})
+            return res.send({error: false, message: "User authenticated", status: 200, userID: user._id})
         } catch (error) {
             return res.send(error.message)
         }
@@ -42,9 +42,9 @@ class UserController{
 
         try {
             const createdUser = await this.userService.createUser(name, username, email, password)
-            return res.status(201).json({message: "Criado com sucesso", createdUser: createdUser})
+            return res.status(201).send({error: false, message: "User sucessfully creadted", status: 201, userID: createdUser._id})
         } catch (error) {
-            return res.status(400).json(error.message)
+            return res.send(error.message)
         }
     }
 

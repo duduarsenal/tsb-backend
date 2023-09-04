@@ -6,7 +6,7 @@ router.get('/', (req, res) => UserController.getAllUsers(req, res))
 
 router.get('/:id', (req, res) => UserController.getUser(req, res))
 
-router.post('/', (req, res) => UserController.createUser(req, res))
+router.post('/register', (req, res) => UserController.createUser(req, res))
 
 router.post('/auth', (req, res) => UserController.authUser(req, res))
 
