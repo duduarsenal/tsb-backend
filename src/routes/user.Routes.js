@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router();
 const UserController = require('../controllers/UserController')
-const confirmToken = require('../usecases/confirmToken')
+const confirmToken = require('../middlewares/confirmToken')
 
 router.post('/register', (req, res) => UserController.createUser(req, res))
 router.post('/auth', (req, res) => UserController.authUser(req, res))

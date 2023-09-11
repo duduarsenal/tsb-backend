@@ -32,7 +32,7 @@ class UserController{
         
         try {
             const user = await this.userService.authUser(username, password)
-            const token = jwt.sign({ id: user._id }, SECRET)
+            const token = jwt.sign({ id: user._id }, SECRET, { expiresIn: 43200 })
             if (!token){
                 throw new Error("Erro ao gerar um token válido")
             }
