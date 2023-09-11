@@ -11,7 +11,8 @@ class UserService {
         }
     }
 
-    async getUser(id){
+    async getUser(token){
+        const { id } = token;
         try {
             const user = await User.findById({_id: id}).select('-password -__v');
             if (!user) throw new Error("User not found")
@@ -29,14 +30,16 @@ class UserService {
             const comparePass = bcrypt.compareSync(password, userData.password)
 
             if(!comparePass) throw new Error(JSON.stringify({error: true, message: "Invalid Password", status: 400}))
-            
-            return userData._id
+        
+            const { id, role } = userData;
+
+            return {id, role};
         } catch (error) {
             throw new Error(error.message)
         }
     }
 
-    async createUser(name, username, email, password){
+    async createUser(name, username, email, password, role){
         try{
             if(await User.findOne({username: username}, '-password -__v')){
                 throw new Error(JSON.stringify({error: true, message: "Username already exists", status: 400}))
@@ -47,7 +50,7 @@ class UserService {
             }
 
             const cryptoPass = bcrypt.hashSync(password, 6);
-            const createdUser = await User.create({name, username, email, password: cryptoPass})
+            const createdUser = await User.create({name, username, email, password: cryptoPass, role})
 
             return createdUser;
         } catch (error) {
@@ -55,7 +58,9 @@ class UserService {
         }
     }
 
-    async updateUser(id, name, password){
+    async updateUser(token, name, password){
+        const { id } = token;
+        
         try {
             const user = await User.findById({_id: id})
             if (!user) throw new Error("User not found")
@@ -68,14 +73,21 @@ class UserService {
         }
     }
 
-    async deleteUser(id){
-        try {
-            const user = await User.findById({_id: id}, '-password -__v')
-            if (!user) throw new Error("User not found")
+    async deleteUser(token){
 
-            return await User.findByIdAndDelete({_id: id}, '-password -__v')
+        var { id } = token;
+
+        if (token.deleteID){
+            var id = token.deleteID;
+        }
+
+        try {
+            const user = await User.findById({_id: id}, '-password -__v');
+            if (!user) throw ("User not found")
+
+            return await User.findByIdAndDelete({_id: id}).select('-password -__v')
         } catch (error) {
-            throw new Error(error)            
+            throw new Error(JSON.stringify({erro: true, message: "Invalid ID Format", status: 401, typeError: error}))         
         }
     }
 }

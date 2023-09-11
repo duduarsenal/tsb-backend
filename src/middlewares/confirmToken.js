@@ -10,8 +10,8 @@ const confirmToken = (req, res, next) => {
     }
 
     try {
-        jwt.verify(token, SECRET)
-
+        const userData = jwt.verify(token, SECRET)
+        req.token = userData;
         next();
     } catch (error) {
         res.status(400).send({error: true, message: "Invalid Token!", status: 401})
