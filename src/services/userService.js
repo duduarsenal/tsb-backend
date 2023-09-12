@@ -87,7 +87,7 @@ class UserService {
 
             return await User.findByIdAndDelete({_id: id}).select('-password -__v')
         } catch (error) {
-            throw new Error(JSON.stringify({erro: true, message: "Invalid ID Format", status: 401, typeError: error}))         
+            throw new Error(JSON.stringify({erro: true, message: "Invalid ID", status: 401, typeError: error}))         
         }
     }
 }
