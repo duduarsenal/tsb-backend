@@ -1,6 +1,7 @@
 const { SECRET, jwt } = require("../config/config")
+const User = require('../models/userModel');
 
-const confirmToken = (req, res, next) => {
+const confirmToken = async (req, res, next) => {
 
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
@@ -10,8 +11,13 @@ const confirmToken = (req, res, next) => {
     }
 
     try {
-        const userData = jwt.verify(token, SECRET)
-        req.token = userData;
+        const { id } = jwt.verify(token, SECRET);
+
+        const userData = await User.findById({_id: id}, '-password -__v');
+        
+        if (!userData) return res.status(404).send({error: true, message: "User Token Not Found", status: 404});
+
+        req.user = userData;
         next();
     } catch (error) {
         res.status(400).send({error: true, message: "Invalid Token!", status: 401})

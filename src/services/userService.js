@@ -6,13 +6,11 @@ class UserService {
         try {
             return await User.find().select('-password -__v');
         } catch (error){
-            // console.log(error)
             throw new Error(error);
         }
     }
 
-    async getUser(token){
-        const { id } = token;
+    async getUser(id){
         try {
             const user = await User.findById({_id: id}).select('-password -__v');
             if (!user) throw new Error("User not found")
@@ -30,16 +28,14 @@ class UserService {
             const comparePass = bcrypt.compareSync(password, userData.password)
 
             if(!comparePass) throw new Error(JSON.stringify({error: true, message: "Invalid Password", status: 400}))
-        
-            const { id, role } = userData;
 
-            return {id, role};
+            return userData;
         } catch (error) {
             throw new Error(error.message)
         }
     }
 
-    async createUser(name, username, email, password, role){
+    async createUser(name, username, email, password){
         try{
             if(await User.findOne({username: username}, '-password -__v')){
                 throw new Error(JSON.stringify({error: true, message: "Username already exists", status: 400}))
@@ -50,7 +46,7 @@ class UserService {
             }
 
             const cryptoPass = bcrypt.hashSync(password, 6);
-            const createdUser = await User.create({name, username, email, password: cryptoPass, role})
+            const createdUser = await User.create({name, username, email, password: cryptoPass})
 
             return createdUser;
         } catch (error) {
@@ -58,8 +54,7 @@ class UserService {
         }
     }
 
-    async updateUser(token, name, password){
-        const { id } = token;
+    async updateUser(id, name, password){
         
         try {
             const user = await User.findById({_id: id})
@@ -73,13 +68,7 @@ class UserService {
         }
     }
 
-    async deleteUser(token){
-
-        var { id } = token;
-
-        if (token.deleteID){
-            var id = token.deleteID;
-        }
+    async deleteUser(id){
 
         try {
             const user = await User.findById({_id: id}, '-password -__v');
