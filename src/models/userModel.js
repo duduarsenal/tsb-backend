@@ -9,6 +9,24 @@ const UserSchema = new mongoose.Schema({
         type: String,
         require: true
     },
+    document: {
+        type: String,
+        require: false
+    },
+    tel: {
+        type: String,
+        require: false
+    },
+    chavePix: {
+        chaveTipo: {
+            type: String,
+            require: false
+        },
+        chaveValue: {
+            type: String,
+            require: false
+        }
+    },
     email: {
         type: String,
         require: true

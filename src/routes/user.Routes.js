@@ -12,6 +12,7 @@ router.get('/getall', confirmToken, (req, res) => UserController.getAllUsers(req
 router.get('/getone', confirmToken, (req, res) => UserController.getUser(req, res))
 
 router.patch('/', confirmToken, (req, res) => UserController.updateUser(req, res))
+router.patch('/cregister', confirmToken, (req, res) => UserController.completeRegister(req, res))
 
 router.delete('/', confirmToken, (req, res) => UserController.deleteUser(req, res))
 router.delete('/:id', confirmToken, verifyRole, (req, res) => UserController.deleteUser(req, res))

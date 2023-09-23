@@ -46,6 +46,10 @@ class UserController{
     async createUser(req, res){
         const { name, username, email, password } = req.body;
 
+        if (!name || !username || !email || !password) {
+            return res.send({error: true, message: "Empty fields", status: 404})
+        };
+
         try {
             const createdUser = await this.userService.createUser(name, username, email, password)
             return res.status(201).send({error: false, message: "User sucessfully creadted", status: 201, userID: createdUser._id})
@@ -60,6 +64,18 @@ class UserController{
 
         try {
             const updatedUser = await this.userService.updateUser(id, name, password)
+            return res.status(200).json({message: "User updated with sucess", updatedUser: updatedUser})
+        } catch (error) {
+            return res.status(400).json(error.message)
+        }
+    } 
+
+    async completeRegister(req, res){
+        const { document, tel, chavePix } = req.body;
+        const { id } = req.user;
+
+        try {
+            const updatedUser = await this.userService.completeRegister(id, document, tel, chavePix)
             return res.status(200).json({message: "User updated with sucess", updatedUser: updatedUser})
         } catch (error) {
             return res.status(400).json(error.message)

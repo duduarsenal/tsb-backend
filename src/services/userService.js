@@ -68,6 +68,18 @@ class UserService {
         }
     }
 
+    async completeRegister(id, document, tel, chavePix){
+        
+        try {
+            const user = await User.findById({_id: id})
+            if (!user) throw new Error("User not found")
+
+            return await User.findByIdAndUpdate({_id: id}, {document: document, tel: tel, chavePix: chavePix}, {new: true}).select('-password -__v')
+        } catch (error) {
+            throw new Error(error)
+        }
+    }
+
     async deleteUser(id){
 
         try {
