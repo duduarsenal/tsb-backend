@@ -9,23 +9,20 @@ const UserSchema = new mongoose.Schema({
         type: String,
         require: true
     },
-    document: {
-        type: String,
-        require: false
-    },
-    tel: {
-        type: String,
-        require: false
+    document: String,
+    tel: String,
+    endereco: {
+        rua: String,
+        numero: String,
+        complemento: String,
+        bairro: String,
+        cep: String,
+        cidade: String,
+        uf: String
     },
     chavePix: {
-        chaveTipo: {
-            type: String,
-            require: false
-        },
-        chaveValue: {
-            type: String,
-            require: false
-        }
+        chaveTipo: String,
+        chaveValue: String
     },
     email: {
         type: String,

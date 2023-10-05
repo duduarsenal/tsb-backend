@@ -71,11 +71,11 @@ class UserController{
     } 
 
     async completeRegister(req, res){
-        const { document, tel, chavePix } = req.body;
+        const userInfos = req.body;
         const { id } = req.user;
 
         try {
-            const updatedUser = await this.userService.completeRegister(id, document, tel, chavePix)
+            const updatedUser = await this.userService.completeRegister(id, userInfos)
             return res.status(200).json({message: "User updated with sucess", updatedUser: updatedUser})
         } catch (error) {
             return res.status(400).json(error.message)

@@ -68,13 +68,17 @@ class UserService {
         }
     }
 
-    async completeRegister(id, document, tel, chavePix){
+    async completeRegister(id, userInfos){
         
+        const { doc, tel, chavePix, endereco } = userInfos;
+        console.log(userInfos)
         try {
             const user = await User.findById({_id: id})
             if (!user) throw new Error("User not found")
 
-            return await User.findByIdAndUpdate({_id: id}, {document: document, tel: tel, chavePix: chavePix}, {new: true}).select('-password -__v')
+            return await User.findByIdAndUpdate({_id: id}, 
+                {document: doc, tel: tel, chavePix: chavePix, endereco: endereco}, {new: true})
+                .select('-password -__v')
         } catch (error) {
             throw new Error(error)
         }
