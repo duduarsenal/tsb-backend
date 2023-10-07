@@ -9,6 +9,9 @@ const verifyRole = require('../middlewares/verifyRole');
 router.post('/register', (req, res) => UserController.createUser(req, res))
 router.post('/auth', (req, res) => UserController.authUser(req, res))
 
+//Autentica o Token
+router.get('/authtoken', confirmToken, (req, res) => res.send({error: false, message: "User authenticated", status: 200}));
+
 // Authenthicated Routes
 router.get('/getone', confirmToken, (req, res) => UserController.getUser(req, res))
 router.patch('/cregister', confirmToken, (req, res) => UserController.completeRegister(req, res))
