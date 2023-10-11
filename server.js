@@ -3,18 +3,16 @@ const app = express();
 const cors = require('cors');
 
 const mongoose = require('mongoose');
-const { URI, PORT } = require("./src/config/config");
+const { URI } = require("./src/config/config");
 
 const userRoutes = require('./src/routes/user.Routes');
 const insurancesRoutes = require('./src/routes/insurances.Routes');
-const pixelsRoutes = require('./src/routes/pixels.Routes');
 
 app.use(express.json());
 app.use(cors());
 
 app.use("/user", userRoutes);
 app.use("/insurances", insurancesRoutes);
-app.use("/pixels", pixelsRoutes)
 
 mongoose
     .connect(URI)
